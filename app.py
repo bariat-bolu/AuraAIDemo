@@ -38,9 +38,9 @@ if choice == "Home":
     st.subheader("Rate Your Symptoms")
     
     # Rate nausea, light sensitivity, and sound sensitivity on a 0-10 scale
-    nausea = st.slider("Are you feeling nauseous? Rate it on a scale of 0 to 10.", 0, 10, 5)
-    light_sensitivity = st.slider("Is light bothering you? Rate it on a scale of 0 to 10.", 0, 10, 5)
-    sound_sensitivity = st.slider("Is noise bothering you? Is everything excessively loud? Rate it on a scale of 0 to 10.", 0, 10, 5)
+    nausea = st.slider("Are you feeling nauseous?", 0, 10, 5)
+    light_sensitivity = st.slider("Is light bothering you?", 0, 10, 5)
+    sound_sensitivity = st.slider("Is noise bothering you? Is everything excessively loud?", 0, 10, 5)
     
     # Prediction based on symptoms
     prediction = predict_migraine(headache_severity, nausea, light_sensitivity, sound_sensitivity)
