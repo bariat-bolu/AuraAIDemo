@@ -21,7 +21,7 @@ choice = st.sidebar.selectbox("Select a page", menu)
 # Replace this with your actual model's prediction function
 def predict_migraine(severity, nausea, light_sensitivity, sound_sensitivity):
     # Replace this with your actual model prediction logic
-    if severity >= 7 and (nausea or light_sensitivity or sound_sensitivity):
+    if severity >= 7 and (nausea >= 5 or light_sensitivity >= 5 or sound_sensitivity >= 5):
         return {"risk_level": "High", "recommendation": "Rest in a dark, quiet room and hydrate."}
     elif severity >= 5:
         return {"risk_level": "Moderate", "recommendation": "Consider taking medication and resting."}
@@ -34,18 +34,22 @@ if choice == "Home":
     
     # Example input fields for symptoms, etc.
     headache_severity = st.slider("Headache Severity (1-10)", 1, 10, 5)
-    nausea = st.checkbox("Are you feeling nauseous?")
-    light_sensitivity = st.checkbox("Is light bothering you?")
-    sound_sensitivity = st.checkbox("Is noise bothering you?")
+    
+    st.subheader("Rate Your Symptoms")
+    
+    # Rate nausea, light sensitivity, and sound sensitivity
+    nausea = st.slider("Are you feeling nauseous? Rate it on a scale of 1 to 10.", 1, 10, 5)
+    light_sensitivity = st.slider("Is light bothering you? Rate it on a scale of 1 to 10.", 1, 10, 5)
+    sound_sensitivity = st.slider("Is noise bothering you? Is everything excessively loud? Rate it on a scale of 1 to 10.", 1, 10, 5)
     
     # Prediction based on symptoms
     prediction = predict_migraine(headache_severity, nausea, light_sensitivity, sound_sensitivity)
     
-    # Display prediction result
-    st.write(f"Prediction: {prediction['risk_level']} risk")
+    # Display prediction result with larger text for risk level
+    st.markdown(f"### **Prediction: {prediction['risk_level']} Risk**", unsafe_allow_html=True)
     st.write(f"Recommendation: {prediction['recommendation']}")
     
-    # Recent entries
+    # Recent entries (for example purposes)
     st.subheader("Recent Entries")
     # Example: Displaying a table of recent log entries (use your database or pandas DataFrame)
     recent_entries = pd.DataFrame({
