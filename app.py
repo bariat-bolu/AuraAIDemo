@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 model = joblib.load('migraine_model.pkl')
 
 # Function to make predictions
-def predict_migraine(nausea, light, noise):
+def predict_migraine(nausea, light, noise): 
     features = np.array([[nausea, light, noise]])
     prediction = model.predict(features)
     return prediction[0]
