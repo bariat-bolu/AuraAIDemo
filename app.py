@@ -15,7 +15,7 @@ st.write("Track your migraine symptoms and get predictions based on your data.")
 
 # Core Navigation
 menu = ["Home", "Log Entry", "Predictions/Insights", "Reports/History", "Settings/Profile"]
-choice = st.sidebar.selectbox("Select a page", menu)
+choice = st.sidebar.radio("Select a page", menu)
 
 # Mock prediction function to demonstrate
 # Replace this with your actual model's prediction function
