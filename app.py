@@ -1,61 +1,115 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from datetime import datetime
 import matplotlib.pyplot as plt
 
-# Streamlit UI for data input
-st.title("Migraine Risk Prediction")
-st.write("Please answer the following questions to help us predict your migraine risk.")
+# Assuming your trained model is in a function like 'predict_migraine'
+# from your_model import predict_migraine  # This is where you import your trained model function
 
-# Step 1: Ask user about their current symptoms
-st.subheader("How are you feeling right now?")
+# App title
+st.title("Migraine Prediction App")
 
-headache = st.radio("Are you having a headache right now?", ("Yes", "No"))
-nauseous = st.radio("Are you feeling nauseous?", ("Yes", "No"))
-sensitive_to_light = st.radio("Are you sensitive to light?", ("Yes", "No"))
-sensitive_to_noise = st.radio("Are you sensitive to noise?", ("Yes", "No"))
+# Add a description of the app
+st.write("Track your migraine symptoms and get predictions based on your data.")
 
-# Step 2: Ask about environmental factors
-st.subheader("How is your current environment?")
-light_intensity = st.slider('Light Intensity (0-100)', 0, 100, 50)
-noise_level = st.slider('Noise Level (0-100)', 0, 100, 50)
+# Core Navigation
+menu = ["Home", "Log Entry", "Predictions/Insights", "Reports/History", "Settings/Profile"]
+choice = st.sidebar.selectbox("Select a page", menu)
 
-# Step 3: Ask about physical data (optional, for more detailed prediction)
-heart_rate = st.slider('Heart Rate (beats per minute)', 40, 200, 75)
-skin_temp = st.slider('Skin Temperature (°C)', 30, 40, 36)
+# Mock prediction function to demonstrate
+# Replace this with your actual model's prediction function
+def predict_migraine(severity, nausea, light_sensitivity, sound_sensitivity):
+    # Replace this with your actual model prediction logic
+    if severity >= 7 and (nausea or light_sensitivity or sound_sensitivity):
+        return {"risk_level": "High", "recommendation": "Rest in a dark, quiet room and hydrate."}
+    elif severity >= 5:
+        return {"risk_level": "Moderate", "recommendation": "Consider taking medication and resting."}
+    else:
+        return {"risk_level": "Low", "recommendation": "Keep track of your symptoms and stay hydrated."}
 
-# Combine user inputs into a DataFrame (for prediction)
-user_data = pd.DataFrame({
-    'Light Intensity': [light_intensity],
-    'Noise Levels': [noise_level],
-    'Heart Rate': [heart_rate],
-    'Skin Temp': [skin_temp]
-})
+# Home/Dashboard Screen
+if choice == "Home":
+    st.header("Current Prediction Status")
+    
+    # Example input fields for symptoms, etc.
+    headache_severity = st.slider("Headache Severity (1-10)", 1, 10, 5)
+    nausea = st.checkbox("Are you feeling nauseous?")
+    light_sensitivity = st.checkbox("Is light bothering you?")
+    sound_sensitivity = st.checkbox("Is noise bothering you?")
+    
+    # Prediction based on symptoms
+    prediction = predict_migraine(headache_severity, nausea, light_sensitivity, sound_sensitivity)
+    
+    # Display prediction result
+    st.write(f"Prediction: {prediction['risk_level']} risk")
+    st.write(f"Recommendation: {prediction['recommendation']}")
+    
+    # Recent entries
+    st.subheader("Recent Entries")
+    # Example: Displaying a table of recent log entries (use your database or pandas DataFrame)
+    recent_entries = pd.DataFrame({
+        "Date": [datetime.now() - pd.Timedelta(days=i) for i in range(3)],
+        "Symptoms": ["Mild headache", "Moderate headache", "Severe headache"],
+        "Risk Level": ["Low", "Moderate", "High"]
+    })
+    st.table(recent_entries)
 
-# Step 4: Make a basic prediction based on symptoms and environment
-# Simple risk estimation based on symptoms
-if headache == "Yes" or nauseous == "Yes" or sensitive_to_light == "Yes" or sensitive_to_noise == "Yes":
-    migraine_risk = 0.8  # High chance of migraine
-else:
-    migraine_risk = 0.2  # Low chance of migraine
+# Log/Entry Screen
+elif choice == "Log Entry":
+    st.header("Log Your Symptoms")
+    
+    date_input = st.date_input("Date", datetime.today())
+    time_input = st.time_input("Time", datetime.now().time())
+    
+    symptom = st.text_input("Describe your symptoms:")
+    trigger = st.text_input("What triggered your migraine?")
+    medication = st.text_input("Medication taken:")
+    
+    # Option to log symptoms
+    if st.button("Log Entry"):
+        st.write("Entry Logged!")
+        # Add functionality to store this in your database or file
 
-# Step 5: Display prediction to the user
-st.subheader("Your Migraine Risk")
-if migraine_risk > 0.7:
-    st.write("You are at high risk of having a migraine.")
-    st.write("We suggest resting in a dark, quiet room, avoiding screens, and drinking plenty of water.")
-elif migraine_risk > 0.4:
-    st.write("You have a moderate chance of having a migraine.")
-    st.write("Taking a break, reducing stress, and staying hydrated may help.")
-else:
-    st.write("Your risk of having a migraine is low.")
-    st.write("However, keep an eye on how you're feeling and rest if needed.")
+# Predictions/Insights Screen
+elif choice == "Predictions/Insights":
+    st.header("Predicted Migraine Risk")
+    
+    # Example: Prediction history with a graph (use your data)
+    risk_data = pd.DataFrame({
+        "Date": [datetime.now() - pd.Timedelta(days=i) for i in range(10)],
+        "Risk Level": np.random.choice(['Low', 'Moderate', 'High'], size=10)
+    })
+    st.line_chart(risk_data.set_index('Date')['Risk Level'].apply(lambda x: {'Low': 0, 'Moderate': 1, 'High': 2}[x]))
 
-# No confusion matrix or technical details
-# Optional: Show a simple visual with no technical jargon
-fig, ax = plt.subplots()
-ax.bar(["Low Risk", "Moderate Risk", "High Risk"], [0.2, 0.5, 0.8], color=['green', 'yellow', 'red'])
-ax.set_title("Migraine Risk Levels")
-ax.set_ylabel("Risk Level")
+# Reports/History Screen
+elif choice == "Reports/History":
+    st.header("Historical Reports")
+    
+    # Display a sample report
+    report_data = pd.DataFrame({
+        "Date": [datetime.now() - pd.Timedelta(days=i) for i in range(10)],
+        "Frequency": np.random.randint(1, 10, 10),
+        "Intensity": np.random.randint(1, 10, 10)
+    })
+    
+    st.write("Your Migraine History Report:")
+    st.table(report_data)
+    
+    # Option to export report
+    if st.button("Download Report"):
+        # Add functionality to download the report
+        st.write("Report ready to download!")
 
-st.pyplot(fig)
+# Settings/Profile Screen
+elif choice == "Settings/Profile":
+    st.header("User Profile and Settings")
+    
+    username = st.text_input("Your Name:")
+    email = st.text_input("Email:")
+    
+    # Custom notifications or other preferences
+    notifications = st.checkbox("Enable notifications?")
+    
+    if st.button("Save Settings"):
+        st.write("Settings saved!")
