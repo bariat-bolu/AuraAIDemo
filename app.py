@@ -9,13 +9,14 @@ from sklearn.model_selection import RandomizedSearchCV, train_test_split
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve, roc_curve, auc
+from sklearn.ensemble import RandomForestClassifier
 
 # Title and description for the Streamlit app
 st.title("Migraine Prediction App")
 st.write("This application predicts whether a person will have a migraine based on various health factors.")
 
 # Step 1: Upload data (for demo purposes, use placeholder data)
-@st.cache
+@st.cache_data
 def load_data():
     # Example: Replace with loading your actual dataset
     # df = pd.read_csv('your_dataset.csv')
@@ -55,6 +56,7 @@ X_res_pca, y_res, pca, scaler = preprocess_data(data)
 X_train_pca, X_test_pca, y_train, y_test = train_test_split(X_res_pca, y_res, test_size=0.2, random_state=42)
 
 # Step 4: Model Training and Tuning
+@st.cache_resource
 def train_model(X_train, y_train):
     rf_model = RandomForestClassifier(random_state=42)
     param_dist_rf = {
