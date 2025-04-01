@@ -13,9 +13,10 @@ st.title("Migraine Prediction App")
 # Add a description of the app
 st.write("Track your migraine symptoms and get predictions based on your data.")
 
-# Core Navigation 
+# Core Navigation (prevents typing)
 menu = ["Home", "Log Entry", "Predictions/Insights", "Reports/History", "Settings/Profile"]
-choice = st.sidebar.selectbox("Select a page", menu, format_func=lambda x: x)
+choice = st.sidebar.radio("Select a page", menu)
+
 
 
 # Mock prediction function to demonstrate
